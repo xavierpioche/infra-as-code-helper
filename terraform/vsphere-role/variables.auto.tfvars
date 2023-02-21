@@ -4,9 +4,6 @@
 
 # Credentials
 
-vsphere_server   = "vcenter.ms.fcm"
-vsphere_username = "terraform@vsphere.local"
-vsphere_password = "aze123QSD!"
 vsphere_insecure = true
 
 # vSphere Settings
