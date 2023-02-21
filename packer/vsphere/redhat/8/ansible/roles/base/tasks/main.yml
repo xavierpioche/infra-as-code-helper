@@ -1,0 +1,71 @@
+---
+- name: modification rhsm.conf - proxy hostname
+  ansible.builtin.replace:
+    path: /etc/rhsm/rhsm.conf
+    regexp: '^proxy_hostname =.*$'
+    replace: 'proxy_hostname = {{ proxy_ip }}'
+  when: set_proxy
+
+- name: modification rhsm.conf - proxy port
+  ansible.builtin.replace:
+    path: /etc/rhsm/rhsm.conf
+    regexp: '^proxy_port =.*$'
+    replace: 'proxy_port = {{ proxy_port }}'
+  when: set_proxy
+
+- name: modification de ssh - disable password auth
+  ansible.builtin.replace:
+    path: /etc/ssh/sshd_config
+    regexp: '^PasswordAuthentication yes.*$'
+    replace: 'PasswordAuthentication no'
+
+- name: souscription a redhat
+  command: subscription-manager register --username {{ rhel_username }} --password {{ rhel_password }} --auto-attach --force
+
+- name: Ajout du repository standard
+  command: subscription-manager repos --enable={{ rhel_repository }}
+
+- name: Add proxy to yum
+  lineinfile:
+       state   : present
+       dest    : /etc/yum.conf
+       line    : 'proxy=http://{{ proxy_ip }}:{{ proxy_port }}/'
+       regexp  : ''
+       insertafter: EOF
+  when: set_proxy
+
+- name: update des packages
+  yum:
+    name: '*'
+    state: latest
+
+- name: Add http
+  ansible.builtin.lineinfile:
+    path: /etc/profile
+    line: export HTTP_PROXY=http://{{ proxy_ip }}:{{ proxy_port }}
+    create: yes
+  when: set_proxy
+
+- name: Add https
+  ansible.builtin.lineinfile:
+    path: /etc/profile
+    line: export HTTPS_PROXY=http://{{ proxy_ip }}:{{ proxy_port }}
+    create: yes
+  when: set_proxy
+
+- name: Add HTTP
+  ansible.builtin.lineinfile:
+    path: /etc/profile
+    line: export http_proxy=http://{{ proxy_ip }}:{{ proxy_port }}
+    create: yes
+  when: set_proxy
+
+- name: Add HTTPS
+  ansible.builtin.lineinfile:
+    path: /etc/profile
+    line: export https_proxy=http://{{ proxy_ip }}:{{ proxy_port }}
+    create: yes
+  when: set_proxy
+
+- name: desinscription de rhsm 
+  command: subscription-manager unregister 

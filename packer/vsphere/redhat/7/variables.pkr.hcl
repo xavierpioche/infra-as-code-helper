@@ -1,0 +1,1 @@
+../8/variables.pkr.hcl

@@ -1,0 +1,9 @@
+---
+- name: configure basic server
+  become: "false"
+  debugger: never
+  gather_facts: "false"
+  hosts: all
+  roles:
+    - base
+

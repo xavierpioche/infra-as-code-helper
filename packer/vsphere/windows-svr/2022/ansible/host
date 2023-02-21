@@ -1,0 +1,7 @@
+[windows]
+172.16.31.190
+[windows:vars]
+ansible_user=ansible
+ansible_connection=ssh
+ansible_shell_type=powershell
+

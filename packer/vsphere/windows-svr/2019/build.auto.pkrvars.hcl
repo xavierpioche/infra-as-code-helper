@@ -1,0 +1,1 @@
+../2022/build.auto.pkrvars.hcl

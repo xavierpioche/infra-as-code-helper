@@ -1,0 +1,1 @@
+../8/build.auto.pkrvars.hcl
