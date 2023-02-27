@@ -1,0 +1,9 @@
+variable vpc_name {}
+variable project_id {}
+variable firewall_rule_name {}
+variable firewall_rule_desc {}
+variable firewall_rule_protocol {}
+variable firewall_rule_ports {}
+variable firewall_rule_source_ranges {}
+variable firewall_rule_target_tags {}
+variable firewall_rule_source_tags {}
