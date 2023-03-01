@@ -43,4 +43,5 @@ module "vm" {
     vm_template = var.vms_template["${each.key}"]
     vm_folder = var.vms_folder["${each.key}"]
     vm_is_windows = var.vms_is_windows["${each.key}"]
+    vm_datadsk = var.vms_datadsk["${each.key}"]
 }
