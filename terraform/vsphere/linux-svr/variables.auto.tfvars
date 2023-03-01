@@ -31,3 +31,5 @@ vms_cluster = ["Cluster","Cluster","Cluster"]
 vms_network = [ "Siege-Services" , "Production-Services" , "RDSAV-Services" ]
 
 vms_folder = [ "ConnectAndSport/CS-Montpellier", "ConnectAndSport/CS-Sete", "ConnectAndSport/CS-Grauduroi" ]
+
+vms_datadsk = [ "small", "small" ]
