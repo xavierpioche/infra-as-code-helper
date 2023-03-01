@@ -60,6 +60,17 @@ resource "vsphere_virtual_machine" "vm" {
      thin_provisioned = data.vsphere_virtual_machine.template.disks.0.thin_provisioned
      unit_number = 0
   }
+  
+  dynamic "disk" {
+    for_each = var.vm_datadsk != "" ? [1] : []
+    content {
+      label = "disk1"
+      size = var.vm_vm_datadsk_map["${var.vm_datadsk}"]
+      eagerly_scrub = false
+      thin_provisioned = true
+      unit_number = 14
+    }
+  }
 
   clone {
      template_uuid = data.vsphere_virtual_machine.template.id
