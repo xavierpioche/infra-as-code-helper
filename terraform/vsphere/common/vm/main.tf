@@ -31,7 +31,8 @@ data "vsphere_resource_pool" "rpool" {
 resource "vsphere_virtual_machine" "vm" {
   name = "${var.vm_prefix}-${var.vm_site}-${var.vm_suffix}-${var.vm_name}"
   datastore_id = data.vsphere_datastore.datastore.id
-  resource_pool_id = data.vsphere_compute_cluster.cluster.resource_pool_id
+  resource_pool_id = data.vsphere_resource_pool.rpool.id
+  #resource_pool_id = data.vsphere_compute_cluster.cluster.resource_pool_id
   folder = var.vm_folder
   firmware = "efi"
   num_cpus = var.vm_cpu_map["${var.vm_cpu}"]
@@ -68,25 +69,28 @@ resource "vsphere_virtual_machine" "vm" {
          dynamic "windows_options" {
             for_each = var.vm_is_windows == true ? [1] : []
             content {
-                      computer_name = "${var.vm_prefix}-${var.vm_site}-${var.vm_suffix}-${var.vm_number}"
+                      #computer_name = "${var.vm_prefix}-${var.vm_site}-${var.vm_suffix}-${var.vm_number}"
+                      computer_name = "${var.vm_prefix}-${var.vm_suffix}-${var.vm_name}"
             }
           }
 
          dynamic "linux_options" {
             for_each = var.vm_is_windows == false ? [1] : [] 
             content {
-                       host_name = "${var.vm_prefix}-${var.vm_site}-${var.vm_suffix}-${var.vm_number}"
+                       #host_name = "${var.vm_prefix}-${var.vm_site}-${var.vm_suffix}-${var.vm_number}"
+                       host_name = "${var.vm_prefix}-${var.vm_suffix}-${var.vm_name}"
                        domain = var.vm_dns_search
             }
           }
 
          network_interface {
-              ipv4_address = var.vm_ipaddress
-              ipv4_netmask = var.vm_netmask
-              dns_domain   = var.vm_dns_search
-              dns_server_list = [ var.vm_dns_list ]
+               ipv4_address = var.vm_ipaddress != "" ? var.vm_ipaddress : null
+               ipv4_netmask = var.vm_netmask != "" ? var.vm_netmask : null
+               dns_domain   = var.vm_ipaddress != "" ? var.vm_dns_search : null
+               dns_server_list =  var.vm_ipaddress != "" ? [var.vm_dns_list] : null
+
           }
-      ipv4_gateway = var.vm_gateway
+      ipv4_gateway = var.vm_gateway != "" ? var.vm_gateway : null
      }
   }
 }
