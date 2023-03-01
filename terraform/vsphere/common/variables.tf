@@ -73,3 +73,7 @@ variable "vms_is_windows" {
 variable "vm_dns_list" {}
 
 variable "vm_dns_search" {}
+
+variable "vms_datadsk" {
+    type = list
+}
