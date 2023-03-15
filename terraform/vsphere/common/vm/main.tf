@@ -29,7 +29,7 @@ data "vsphere_resource_pool" "rpool" {
 }
 
 resource "vsphere_virtual_machine" "vm" {
-  name = "${var.vm_prefix}-${var.vm_site}-${var.vm_suffix}-${var.vm_name}"
+  name = "${var.vm_prefix}-${var.vm_suffix}-${var.vm_name}"
   datastore_id = data.vsphere_datastore.datastore.id
   resource_pool_id = data.vsphere_resource_pool.rpool.id
   #resource_pool_id = data.vsphere_compute_cluster.cluster.resource_pool_id
@@ -38,8 +38,8 @@ resource "vsphere_virtual_machine" "vm" {
   num_cpus = var.vm_cpu_map["${var.vm_cpu}"]
   memory = var.vm_memory_map["${var.vm_memory}"]
   guest_id = data.vsphere_virtual_machine.template.guest_id
-  wait_for_guest_ip_timeout = 0
-  wait_for_guest_net_timeout = 0
+  wait_for_guest_ip_timeout = 300
+  wait_for_guest_net_timeout = 300
   wait_for_guest_net_routable = false
   migrate_wait_timeout = 90
   cpu_hot_add_enabled    = true
@@ -60,15 +60,15 @@ resource "vsphere_virtual_machine" "vm" {
      thin_provisioned = data.vsphere_virtual_machine.template.disks.0.thin_provisioned
      unit_number = 0
   }
-  
+
   dynamic "disk" {
     for_each = var.vm_datadsk != "" ? [1] : []
     content {
-      label = "disk1"
-      size = var.vm_vm_datadsk_map["${var.vm_datadsk}"]
-      eagerly_scrub = false
-      thin_provisioned = true
-      unit_number = 14
+       label = "disk1"
+       size = var.vm_datadsk_map["${var.vm_datadsk}"]
+       thin_provisioned = true
+       eagerly_scrub = false
+       unit_number = 14
     }
   }
 
@@ -80,7 +80,6 @@ resource "vsphere_virtual_machine" "vm" {
          dynamic "windows_options" {
             for_each = var.vm_is_windows == true ? [1] : []
             content {
-                      #computer_name = "${var.vm_prefix}-${var.vm_site}-${var.vm_suffix}-${var.vm_number}"
                       computer_name = "${var.vm_prefix}-${var.vm_suffix}-${var.vm_name}"
             }
           }
@@ -88,18 +87,16 @@ resource "vsphere_virtual_machine" "vm" {
          dynamic "linux_options" {
             for_each = var.vm_is_windows == false ? [1] : [] 
             content {
-                       #host_name = "${var.vm_prefix}-${var.vm_site}-${var.vm_suffix}-${var.vm_number}"
                        host_name = "${var.vm_prefix}-${var.vm_suffix}-${var.vm_name}"
                        domain = var.vm_dns_search
             }
           }
 
-         network_interface {
+          network_interface {
                ipv4_address = var.vm_ipaddress != "" ? var.vm_ipaddress : null
                ipv4_netmask = var.vm_netmask != "" ? var.vm_netmask : null
                dns_domain   = var.vm_ipaddress != "" ? var.vm_dns_search : null
                dns_server_list =  var.vm_ipaddress != "" ? [var.vm_dns_list] : null
-
           }
       ipv4_gateway = var.vm_gateway != "" ? var.vm_gateway : null
      }

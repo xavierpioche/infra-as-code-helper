@@ -104,7 +104,6 @@ logvol swap --name=lv_swap --vgname=VolGroup --size=2016
 # Require @Base
 @Base
 @core
-perl
 chkconfig
 gzip
 gdisk
@@ -112,19 +111,6 @@ python3
 python3-pip
 -iwl*firmware
 open-vm-tools
-telnet
-vim-enhanced
-mlocate
-net-tools
-net-snmp
-net-snmp-utils
-sysstat
-tcpdump
-wget
-libselinux-python3
-policycoreutils-python
-unzip
-ntp
 
 %end # End of %packages section
 

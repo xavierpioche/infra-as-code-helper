@@ -2,6 +2,8 @@ variable "vsphere_endpoint" {}
 variable "vsphere_username" {}
 variable "vsphere_password" {}
 
+variable "dns_server" {}
+
 variable "vms_name" { 
     type = list 
 }
@@ -75,5 +77,7 @@ variable "vm_dns_list" {}
 variable "vm_dns_search" {}
 
 variable "vms_datadsk" {
-    type = list
+  type = list
 }
+
+variable "vm_envx" {}

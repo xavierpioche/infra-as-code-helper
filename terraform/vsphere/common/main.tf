@@ -14,6 +14,13 @@ provider "vsphere" {
   allow_unverified_ssl = true
 }
 
+provider "dns" {
+  update {
+        server = var.dns_server
+ }
+}
+
+
 locals {
   vms_creation = {for s in var.vms_name: index(var.vms_name, s) => s}
 }
@@ -44,4 +51,17 @@ module "vm" {
     vm_folder = var.vms_folder["${each.key}"]
     vm_is_windows = var.vms_is_windows["${each.key}"]
     vm_datadsk = var.vms_datadsk["${each.key}"]
+}
+
+output "vm_address" {
+    value = module.vm[*] 
+}
+
+module "dns" {
+    #for_each = { for s in module.vm.*: index(module.vm.*, s) => s }
+    for_each = local.vms_creation 
+    source = "./dns"
+    vm_name = values(module.vm)[*].vm_name[0]
+    vm_address = values(module.vm)[*].vm_address[0]
+    vm_envx = var.vm_envx
 }

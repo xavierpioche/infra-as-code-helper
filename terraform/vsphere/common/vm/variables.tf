@@ -35,6 +35,7 @@ variable "vm_is_windows" {
 
 variable "vm_datadsk" {}
 
+
 variable "vm_cpu_map" {
   type = map
   default = {
