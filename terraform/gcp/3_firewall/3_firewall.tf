@@ -5,10 +5,10 @@ locals {
 }
 
 module "firewall_rules" {
-  for_each = local.all_rules
+  for_each     = local.all_rules
   source       = "../modules/firewall-rules"
   project_id   = var.project_id
-  vpc_name = var.vpc_name
+  vpc_name     = var.vpc_name
   firewall_rule_name = var.all_firewall_rules["${each.key}"]["name"]
   firewall_rule_desc = var.all_firewall_rules["${each.key}"]["desc"]
   firewall_rule_protocol = var.all_firewall_rules["${each.key}"]["protocol"]
