@@ -1,6 +1,3 @@
-locals {
-  
-}
 
 data "terraform_remote_state" "rg_terraform_output" {
   backend = "local"
@@ -17,4 +14,8 @@ module "vnet" {
   vnet_rg_name = data.terraform_remote_state.rg_terraform_output.outputs.rg_names[0]["first"].rg_name
   vnet_all_subnets = var.vnet_all_subnets
   vnet_address_space = var.vnet_address_space
+}
+
+output "vnet_ids" {
+  value = module.vnet.subnet_ids
 }

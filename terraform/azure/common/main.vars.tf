@@ -8,3 +8,6 @@ variable "vnet_address_space" {}
 variable "vnet_all_subnets" {
   type=map(map(any))
 }
+
+variable "nsg_name" {}
+variable "nsg_location" {}
