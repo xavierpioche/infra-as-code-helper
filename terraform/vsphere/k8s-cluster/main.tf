@@ -64,6 +64,7 @@ module "masters_dns" {
     vm_name = values(module.masters)[*].vm_name[0]
     vm_address = values(module.masters)[*].vm_address[0]
     vm_envx = var.common_vm_envx
+    vm_dns_search = var.common_vm_dns_search
 }
 
 module "workers" {
@@ -104,4 +105,5 @@ module "workers_dns" {
     vm_name = values(module.workers)[*].vm_name[0]
     vm_address = values(module.workers)[*].vm_address[0]
     vm_envx = var.common_vm_envx
+    vm_dns_search = var.common_vm_dns_search
 }
