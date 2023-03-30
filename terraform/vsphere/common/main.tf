@@ -64,4 +64,5 @@ module "dns" {
     vm_name = values(module.vm)[*].vm_name[0]
     vm_address = values(module.vm)[*].vm_address[0]
     vm_envx = var.vm_envx
+    vm_dns_search = var.vm_dns_search
 }

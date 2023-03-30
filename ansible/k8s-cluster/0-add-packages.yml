@@ -1,0 +1,9 @@
+- hosts: 'workers, masters' 
+  become: yes
+  tasks:
+    - name: add packages
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - acl

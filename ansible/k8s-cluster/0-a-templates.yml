@@ -1,0 +1,9 @@
+- hosts: 'main' 
+  become: yes
+  tasks:
+    - name: add hosts file
+      template:
+        src: "{{ src }}"
+        dest: "{{ dest }}"
+        mode: 0744
+

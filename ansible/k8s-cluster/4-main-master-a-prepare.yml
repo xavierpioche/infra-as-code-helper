@@ -1,0 +1,35 @@
+- hosts: main
+  become: yes
+  gather_facts: yes
+  vars:
+    - master_1: 192.168.10.101
+    - master_2: 192.168.10.102
+    - master_3: 192.168.10.103
+    - loadbalancer: 192.168.10.100
+
+  tasks:
+    - name: download cfssl 
+      get_url: https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
+        dest: /tmp/cfssl_linux-amd64
+        mode: '0555'
+
+    - name: download cfssl 
+      get_url: https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
+        dest: /tmp/cfssljson_linux-amd64
+        mode: '0555'
+
+    - name: install the cfssl binaries
+      shell: mv /tmp/cfssl* /usr/local/bin/
+
+    - name: genere le certifiact autorite
+      shell: cfssl gencert -initca ca-csr.json | cfssljson -bare ca
+      args:
+        chdir: /tmp
+
+    - name: generate kubernetes cert an private key
+      shell: cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -hostname={{master_1}},{{master_2}},{{master_3}},{{loadbalancer}},127.0.0.1,kubernetes.default -profile=kubernetes kubernetes-csr.json | cfssljson -bare kubernetes
+      args:
+        chdir: /tmp
+
+    - name: recupere les certificats pour les renvoyer
+      local_action: mkdir -p /tmp/pem ; scp {{master_1}}:/tmp/*.pem /tmp/pem/

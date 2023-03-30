@@ -1,0 +1,6 @@
+- hosts: 'workers, masters' 
+  become: yes
+  tasks:
+    - copy: 
+        src: "{{src}}"
+        dest: "{{dest}}"

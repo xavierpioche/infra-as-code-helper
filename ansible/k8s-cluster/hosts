@@ -1,0 +1,17 @@
+[main]
+op-k8s-masters-1 ansible_host=192.168.10.101 ansible_user=ansible
+
+[seconds]
+op-k8s-masters-2 ansible_host=192.168.10.102 ansible_user=ansible
+op-k8s-masters-3 ansible_host=192.168.10.103 ansible_user=ansible
+
+
+[masters]
+op-k8s-masters-1 ansible_host=192.168.10.101 ansible_user=ansible
+op-k8s-masters-2 ansible_host=192.168.10.102 ansible_user=ansible
+op-k8s-masters-3 ansible_host=192.168.10.103 ansible_user=ansible
+
+[workers]
+op-k8s-workers-1 ansible_host=192.168.10.201 ansible_user=ansible
+op-k8s-workers-2 ansible_host=192.168.10.202 ansible_user=ansible
+op-k8s-workers-3 ansible_host=192.168.10.203 ansible_user=ansible
