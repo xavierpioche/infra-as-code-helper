@@ -22,8 +22,51 @@ provider "dns" {
 
 
 locals {
+  nodes_lbs = {for s in var.lbs_vms_name: index(var.lbs_vms_name, s) => s}
   nodes_masters = {for s in var.masters_vms_name: index(var.masters_vms_name, s) => s}
   nodes_workers = {for s in var.workers_vms_name: index(var.workers_vms_name, s) => s}
+}
+
+
+module "lbs" {
+    for_each = local.nodes_lbs 
+    source = "./vm"
+
+    vs_datacenter = var.lbs_vms_datacenter["${each.key}"]
+    vs_cluster = var.lbs_vms_cluster["${each.key}"]
+    vs_datastore = var.lbs_vms_datastore["${each.key}"]
+
+    vm_number = "${each.key}"
+    vm_prefix = var.lbs_vms_prefix["${each.key}"]
+    vm_suffix = var.lbs_vms_suffix["${each.key}"]
+    vm_cpu = var.lbs_vms_cpu["${each.key}"]
+    vm_memory = var.lbs_vms_memory["${each.key}"]
+    vm_name = var.lbs_vms_name["${each.key}"]
+    vm_ipaddress = var.lbs_vms_ip_ad["${each.key}"]
+    vm_netmask = var.lbs_vms_ip_mk["${each.key}"]
+    vm_gateway = var.lbs_vms_ip_gw["${each.key}"]
+    vm_dns_search = var.common_vm_dns_search
+    vm_dns_list = var.common_vm_dns_list
+    vs_resourcepool = var.lbs_vms_resource_pool["${each.key}"]
+    vs_network = var.lbs_vms_network["${each.key}"]
+    vm_site = var.lbs_vms_site["${each.key}"]
+    vm_template = var.lbs_vms_template["${each.key}"]
+    vm_folder = var.lbs_vms_folder["${each.key}"]
+    vm_is_windows = var.lbs_vms_is_windows["${each.key}"]
+    vm_datadsk = var.lbs_vms_datadsk["${each.key}"]
+}
+
+output "lbs_address" {
+    value = module.lbs[*] 
+}
+
+module "lbs_dns" {
+    for_each = local.nodes_lbs
+    source = "./dns"
+    vm_name = values(module.lbs)[*].vm_name[0]
+    vm_address = values(module.lbs)[*].vm_address[0]
+    vm_envx = var.common_vm_envx
+    vm_dns_search = var.common_vm_dns_search
 }
 
 module "masters" {

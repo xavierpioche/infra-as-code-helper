@@ -1,0 +1,13 @@
+- hosts: 'workers, masters'
+  become: yes
+  tasks:
+    - name: distribute certificates
+      copy:
+        src:  '{{ item }}'
+        dest: '{{ item }}'
+        mode: 0644
+      loop:
+        - /tmp/ca.pem
+        - /tmp/kubernetes.pem
+        - /tmp/kubernetes-key.pem
+

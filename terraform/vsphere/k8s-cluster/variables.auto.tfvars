@@ -1,5 +1,25 @@
 dns_server = "192.168.1.240"
 
+
+lbs_vms_name = [ "1" , "2" , "3" ]
+lbs_vms_ip_ad = [ "192.168.10.97" , "192.168.10.98" , "192.168.10.99" ]
+lbs_vms_ip_mk = [ "24" , "24" , "24" ]
+lbs_vms_ip_gw = [ "192.168.10.1" , "192.168.10.1" , "192.168.10.1" ]
+lbs_vms_template = [ "linux-ubuntu-22.3-socle" , "linux-ubuntu-22.3-socle" , "linux-ubuntu-22.3-socle" ]
+lbs_vms_folder = [ "k8s-lbs" , "k8s-lbs" , "k8s-lbs" ]
+lbs_vms_resource_pool = [ "" , "" , "" ]
+lbs_vms_datastore = [ "ZDS2" , "ZDS3" , "ZDS4" ]
+lbs_vms_datacenter = [ "Datacenter" , "Datacenter" , "Datacenter" ]
+lbs_vms_cluster = [ "Cluster" , "Cluster" ,"Cluster" ]
+lbs_vms_network = [ "k8s-nodes" , "k8s-nodes" , "k8s-nodes" ]
+lbs_vms_memory = [ "small" , "small" , "small" ]
+lbs_vms_cpu = [ "small" , "small" , "small" ]
+lbs_vms_suffix = [ "k8s-lbs" , "k8s-lbs" , "k8s-lbs" ]
+lbs_vms_prefix = [ "op" , "op" , "op" ]
+lbs_vms_site = [ "gp" , "gp" , "gp" ]
+lbs_vms_is_windows = [ false , false , false ]
+lbs_vms_datadsk = [ "small" , "small" , "small" ]
+
 masters_vms_name = [ "1" , "2" , "3" ]
 masters_vms_ip_ad = [ "192.168.10.101" , "192.168.10.102" , "192.168.10.103" ]
 masters_vms_ip_mk = [ "24" , "24" , "24" ]
@@ -7,7 +27,6 @@ masters_vms_ip_gw = [ "192.168.10.1" , "192.168.10.1" , "192.168.10.1" ]
 masters_vms_template = [ "linux-ubuntu-22.3-socle" , "linux-ubuntu-22.3-socle" , "linux-ubuntu-22.3-socle" ]
 masters_vms_folder = [ "k8s-masters" , "k8s-masters" , "k8s-masters" ]
 masters_vms_resource_pool = [ "" , "" , "" ]
-
 masters_vms_datastore = [ "ZDS2" , "ZDS3" , "ZDS4" ]
 masters_vms_datacenter = [ "Datacenter" , "Datacenter" , "Datacenter" ]
 masters_vms_cluster = [ "Cluster" , "Cluster" ,"Cluster" ]

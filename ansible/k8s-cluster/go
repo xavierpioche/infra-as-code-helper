@@ -18,6 +18,8 @@ ansible-playbook -i hosts -e 'src=templates/ca-csr.json.j2 dest=/tmp/ca-csr.json
 
 ansible-playbook -i hosts 4-main-master-a-prepare.yml
 
+ansible-playbook -i hosts 4-main-master-b-push.yml
+
 ansible-playbook -i hosts 4-main-master-b-install.yml
 
 

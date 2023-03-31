@@ -1,0 +1,20 @@
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: ClusterConfiguration
+kubernetesVersion: stable
+apiServer:
+ CertSANs:
+   - {{ loadbalancer }}
+controlPlaneEndpoint: "{{ loadbalancer }}:6443"
+etcd:
+  external:
+    endpoints:
+    - https://{{ master1 }}:2379
+    - https://{{ master2 }}:2379
+    - https://{{ master3 }}:2379
+    caFile: /etc/etcd/ca.pem
+    certFile: /etc/etcd/kubernetes.pem
+    keyFile: /etc/etcd/kubernetes-key.pem
+networking:
+  podSubnet: {{ podscidr }}
+  serviceSubnet: {{ svcscidr }}
+  dnsDomain: {{ dnsdomain }}

@@ -1,0 +1,11 @@
+    - name: remove cloud-init package
+      apt:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ package_list }}"
+    - name: remove cloud-init directories
+      shell:
+        cmd: rm -rf /etc/cloud/ && sudo rm -rf /var/lib/cloud/
+
+

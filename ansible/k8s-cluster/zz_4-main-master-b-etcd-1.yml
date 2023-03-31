@@ -1,0 +1,8 @@
+    - name: copy install-etcd script
+      copy:
+        src: "templates/install-etcd.sh"
+        dest: "/tmp/install-etcd.sh"
+        mode: 0744
+
+    - name: execute install-etcd script
+      shell: /tmp/install-etcd.sh

@@ -1,38 +1,29 @@
-- hosts: main
-  become: yes
-  gather_facts: yes
-  vars:
-    - masters: "192.168.10.101,192.168.10.102,192.168.10.103"
-    - main: 192.168.10.101
-    - loadbalancer: 192.168.10.100
-
-  tasks:
     - name: download cfssl 
       get_url: 
         url: https://pkg.cfssl.org/R1.2/cfssl_linux-amd64
         dest: /tmp/cfssl_linux-amd64
         mode: '0555'
 
-    - name: download cfssl 
+    - name: download cfssljson 
       get_url: 
         url: https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64
         dest: /tmp/cfssljson_linux-amd64
         mode: '0555'
 
     - name: install the cfssl binaries
-      shell: mv /tmp/cfssl* /usr/local/bin/
+      shell: mv /tmp/cfssl_linux-amd64 /usr/local/bin/cfssl ; mv /tmp/cfssljson_linux-amd64 /usr/local/bin/cfssljson
 
     - name: genere le certifiact autorite
-      shell: cd /tmp ; cfssl gencert -initca /tmp/ca-csr.json | cfssljson -bare ca
+      shell: cd /tmp ; /usr/local/bin/cfssl gencert -initca /tmp/ca-csr.json | /usr/local/bin/cfssljson -bare /tmp/ca
       args:
         chdir: /tmp
 
     - name: generate kubernetes cert an private key
-      shell: cd /tmp ; cfssl gencert -ca=/tmp/ca.pem -ca-key=/tmp/ca-key.pem -config=/tmp/ca-config.json -hostname={{masters}},{{loadbalancer}},127.0.0.1,kubernetes.default -profile=kubernetes /tmp/kubernetes-csr.json | cfssljson -bare kubernetes
+      shell: cd /tmp ; /usr/local/bin/cfssl gencert -ca=/tmp/ca.pem -ca-key=/tmp/ca-key.pem -config=/tmp/ca-config.json -hostname={{masters}},{{loadbalancer}},127.0.0.1,kubernetes.default -profile=kubernetes /tmp/kubernetes-csr.json | /usr/local/bin/cfssljson -bare kubernetes
       args:
         chdir: /tmp
 
-    - name: change right
+    - name: change right to pem files
       shell: chmod 644 /tmp/*.pem
 
     - name: recupere les certificats
@@ -45,5 +36,3 @@
         - /tmp/kubernetes.pem
         - /tmp/kubernetes-key.pem
 
-#    - name: recupere les certificats pour les renvoyer
-#      local_action: scp ansible@{{main}}:/tmp/*.pem /tmp/

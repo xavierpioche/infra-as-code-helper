@@ -1,0 +1,8 @@
+    - name: distribute files
+      copy:
+        src:  "/tmp/{{ item }}"
+        dest: "/tmp/{{ item }}"
+        mode: 0644
+      with_items:
+        - "{{ fileslist }}"
+
