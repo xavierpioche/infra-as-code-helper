@@ -1,0 +1,95 @@
+- hosts: all
+  become: yes
+  tasks:
+    - import_tasks: zz_0-templates.yml
+      vars:
+         src: templates/resolv.conf.j2
+         dest: /etc/resolv.conf
+         dns_domain: xprd.k8s.local
+         dns_server: 192.168.1.240
+
+    - import_tasks: zz_0-templates.yml
+      vars:
+         src: templates/hosts.j2
+         dest: /etc/hosts
+
+    - name: update apt cache
+      apt:
+         update_cache: yes
+
+    - import_tasks: zz_0-remove-cloud-init.yml
+      vars:
+         package_list:
+           - cloud-init
+
+    - import_tasks: zz_0-add-packages.yml
+      vars:
+         package_list:
+           - haproxy
+           - keepalived
+
+    - import_tasks: zz_99-copy.yml
+      vars:
+         src: templates/haproxy.cfg.j2
+         dest: /etc/haproxy/haproxy.cfg.0
+
+    - import_tasks: zz_0-templates.yml
+      vars:
+         src: templates/frontend.cfg.j2
+         dest: /etc/haproxy/k8s_init.cfg
+         vip_name: "k8s1"
+         vip_ip: "192.168.10.100"
+         vip_port: "6443"
+         server_name_1: "op-k8s-masters-1"
+         server_ip_1: "192.168.10.101"
+         server_port_1: "6443"
+         server_name_2: "op-k8s-masters-2"
+         server_ip_2: "192.168.10.102"
+         server_port_2: "6443"
+         server_name_3: "op-k8s-masters-3"
+         server_ip_3: "192.168.10.103"
+         server_port_3: "6443"
+
+    - import_tasks: zz_99-merge.yml
+      vars:
+         dir: "/etc/haproxy"
+         dest: "haproxy.cfg"
+         src: "haproxy.cfg.0"
+         fils: "k8s_"
+         file: ".cfg"
+
+    - import_tasks: zz_0-templates.yml
+      vars:
+         src: templates/keepalived.cfg.j2
+         dest: /etc/keepalived/keepalived.conf
+         state: "master"
+         vid: "50"
+         vip: "192.168.10.100/24"
+         pri: "255"
+      when: inventory_hostname in groups["main"]
+
+    - import_tasks: zz_0-templates.yml
+      vars:
+         src: templates/keepalived.cfg.j2
+         dest: /etc/keepalived/keepalived.conf
+         state: "backup"
+         vid: "50"
+         vip: "192.168.10.100/24"
+         pri: "250"
+      when: inventory_hostname in groups["second"]
+
+    - import_tasks: zz_0-templates.yml
+      vars:
+         src: templates/keepalived.cfg.j2
+         dest: /etc/keepalived/keepalived.conf
+         state: "backup"
+         vid: "50"
+         vip: "192.168.10.100/24"
+         pri: "245"
+      when: inventory_hostname in groups["third"]
+
+    - import_tasks: zz_0_restart_services
+      vars:
+         svc:
+           - keepalived
+           - haproxy

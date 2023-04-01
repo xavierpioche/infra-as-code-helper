@@ -1,0 +1,14 @@
+frontend {{ vip_name }}
+   bind *:{{ vip_port }}
+#   bind {{ vip_ip }}:{{ vip_port }}
+   option tcplog
+   mode tcp
+   default_backend backend_{{vip_name }}
+
+backend backend_{{vip_name }}
+   mode tcp
+   balance roundrobin
+   option tcp-check
+   server  {{ server_name_1 }} {{ server_ip_1 }}:{{ server_port_1 }} check fall 3 rise 2 
+   server  {{ server_name_2 }} {{ server_ip_2 }}:{{ server_port_2 }} check fall 3 rise 2 
+   server  {{ server_name_3 }} {{ server_ip_3 }}:{{ server_port_3 }} check fall 3 rise 2 

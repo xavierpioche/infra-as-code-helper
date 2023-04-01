@@ -1,0 +1,13 @@
+[main]
+op-k8s-lbs-1 ansible_host=192.168.10.97 ansible_user=ansible
+
+[second]
+op-k8s-lbs-2 ansible_host=192.168.10.98 ansible_user=ansible
+
+[third]
+op-k8s-lbs-3 ansible_host=192.168.10.99 ansible_user=ansible
+
+[loadbalancers]
+op-k8s-lbs-1 ansible_host=192.168.10.97 ansible_user=ansible
+op-k8s-lbs-2 ansible_host=192.168.10.98 ansible_user=ansible
+op-k8s-lbs-3 ansible_host=192.168.10.99 ansible_user=ansible
