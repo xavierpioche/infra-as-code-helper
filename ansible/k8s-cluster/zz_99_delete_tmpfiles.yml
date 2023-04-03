@@ -1,0 +1,6 @@
+- name: Recursively remove directory
+  ansible.builtin.file:
+    path: /tmp/"{{ item }}"
+    state: absent
+  loop:
+    - "{{ file_listing }}"

@@ -1,0 +1,10 @@
+frontend myapp
+   bind *:8080
+   mode http
+   default_backend backend_myapp
+
+backend backend_myapp
+   server op-k8s-masters-1 192.168.10.101:30081 check fall 3 rise 2
+   server op-k8s-masters-2 192.168.10.102:30081 check fall 3 rise 2
+   server op-k8s-masters-3 192.168.10.103:30081 check fall 3 rise 2
+

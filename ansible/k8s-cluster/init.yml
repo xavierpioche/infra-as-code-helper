@@ -1,6 +1,10 @@
 - hosts: all
   become: yes
   tasks:
+    - name: force delete temp
+      shell:  rm -rf /tmp/pki ; rm -f /tmp/kubernetes_join_command ; rm -f /tmp/ca.pem ; rm -f /tmp/kubernetes.pem ; rm -f /tmp/kubernetes-key.pem ; rm -f /tmp/pki.tar
+      delegate_to: 127.0.0.1
+
     - import_tasks: zz_0-templates.yml
       vars:
          src: templates/resolv.conf.j2
@@ -114,7 +118,7 @@
          master1: "192.168.10.101"
          master2: "192.168.10.102"
          master3: "192.168.10.103"
-         podscidr: "192.168.11.0/24"
+         podscidr: "10.244.0.0/16"
          svcscidr: "192.168.12.0/24"
          dnsdomain: "xprd.k8s.local"
       when: inventory_hostname in groups["masters"]
@@ -141,15 +145,18 @@
       when: inventory_hostname in groups["main"]
 
     - name: archive pki certificates
-      shell: cd /etc/kubernetes ; tar cvf pki.tar pki
+      shell: cd /etc/kubernetes ; tar cvf pki.tar pki/
       when: inventory_hostname in groups["main"]
 
-    - name: fetch pki certificates from main
-      fetch:
-        src: /etc/kubernetes/pki.tar
-        dest: /tmp/
-        flat: yes
-      when: inventory_hostname in groups["main"]
+  #  - name: fetch pki certificates from main
+  #    fetch:
+  #      src: /etc/kubernetes/pki.tar
+  #      dest: /tmp
+  #      flat: yes
+  #    when: inventory_hostname in groups["main"]
+    - name: fetch pki.tar
+      shell: scp -i /home/xavier/.ssh/id_rsa ansible@192.168.10.101:/etc/kubernetes/pki.tar /tmp/
+      delegate_to: localhost
 
     - name: remove apiserver from pki.tar
       shell: cd /tmp ; tar xvf pki.tar ; rm -f pki/apiserver.* ; rm -f pki.tar ; tar cvf pki.tar pki/ 
@@ -198,8 +205,17 @@
     - name: install Pod network
       become: yes
       become_user: kube
-      shell: kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
+      shell; kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+      #shell: kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
       args:
         chdir: $HOME
       when: inventory_hostname in groups["main"]
 
+    - name: install Pod network
+      become: yes
+      become_user: kube
+      shell: kubectl label --overwrite ns kube-flannel pod-security.kubernetes.io/enforce=privileged
+      #shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.8.0/Documentation/kube-flannel-rbac.yml
+      args:
+        chdir: $HOME
+      when: inventory_hostname in groups["main"]
