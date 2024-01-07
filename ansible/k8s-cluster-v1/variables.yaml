@@ -1,0 +1,44 @@
+
+
+dns_domain: k8S.xprd.local
+dns_server: 192.168.122.232
+k8slb_name: k8slb
+k8slb_ip: 192.168.122.250
+k8slb_vip_ip: 192.168.122.250
+k8sma1_ip: 192.168.122.212
+k8sma1_name: k8sma1
+k8sma2_ip: 192.168.122.198
+k8sma2_name: k8sma2
+k8sma3_ip: 192.168.122.169
+k8sma3_name: k8sma3
+k8swk1_ip: 192.168.122.156
+k8swk1_name: k8swk1
+k8swk2_ip: 192.168.122.248
+k8swk2_name: k8swk2
+k8swk3_ip: 192.168.122.247
+k8swk3_name: k8swk3
+
+masters: "192.168.122.212,192.168.122.198,192.168.122.169"
+main: 192.168.122.212
+loadbalancer: 192.168.122.250
+
+master1: 192.168.122.212
+master2: 192.168.122.198
+master3: 192.168.122.169
+podscidr: "10.244.0.0/16"
+svcscidr: "192.168.12.0/24"
+dnsdomain: k8S.xprd.local
+
+kubernetes_prerequisites_packages:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - gnupg2
+  - lsb-release
+  - bridge-utils
+
+kubernetes_version: 1.28.5-1.1
+
+kubeadm_init_master: 192.168.122.212
+
+

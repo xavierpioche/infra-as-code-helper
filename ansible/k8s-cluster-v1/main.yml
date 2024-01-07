@@ -1,0 +1,37 @@
+- hosts: all
+  become: yes
+  max_fail_percentage: 0
+  gather_facts: yes
+  vars_files: ./variables.yaml
+
+  tasks:
+     - import_tasks: zz_0-templates.yml
+       vars:
+         src: templates/resolv.conf.j2
+         dest: /etc/resolv.conf
+
+     - import_tasks: zz_0-templates.yml
+       vars:
+         src: templates/hosts.j2
+         dest: /etc/hosts
+
+     - import_tasks: zz_2-users.yml
+
+     - import_tasks: pre-requisites.yml
+
+     - import_tasks: init_master.yml
+       when: inventory_hostname in groups["main"]
+
+     - import_tasks: join.yml
+
+
+  handlers:
+   - name: restart_containerd
+     service:
+       name: containerd
+       state: restarted
+
+   - name: update_apt_cache
+     apt:
+       update_cache: yes
+

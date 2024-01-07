@@ -1,0 +1,25 @@
+
+
+[main]
+k8sma1 ansible_host=192.168.122.212 ansible_user=xavier
+
+[seconds]
+k8sma2 ansible_host=192.168.122.198 ansible_user=xavier
+k8sma3 ansible_host=192.168.122.169 ansible_user=xavier
+
+[second]
+k8sma2 ansible_host=192.168.122.198 ansible_user=xavier
+
+[third]
+k8sma3 ansible_host=192.168.122.169 ansible_user=xavier
+
+[masters]
+k8sma1 ansible_host=192.168.122.212 ansible_user=xavier
+k8sma2 ansible_host=192.168.122.198 ansible_user=xavier
+k8sma3 ansible_host=192.168.122.169 ansible_user=xavier
+
+[workers]
+k8swk1 ansible_host=192.168.122.156 ansible_user=xavier
+k8swk2 ansible_host=192.168.122.248 ansible_user=xavier
+k8swk3 ansible_host=192.168.122.247 ansible_user=xavier
+

@@ -1,0 +1,13 @@
+- name: Enable service and ensure it is not masked
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    enabled: true
+    masked: no
+  with_items: "{{ svc }}"
+
+- name: restart service
+  ansible.builtin.systemd:
+    state: restarted
+    name: "{{ item }}"
+  with_items: "{{ svc }}"
+

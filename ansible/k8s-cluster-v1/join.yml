@@ -1,0 +1,45 @@
+- name: Check if master is initialized
+  delegate_to: "{{ kubeadm_init_master }}"
+  uri:
+    url: "https://{{ kubeadm_init_master }}:6443"
+    validate_certs: no
+    status_code: [403]
+  register: result
+  until: "result.status == 403"
+  retries: 20
+  delay: 5
+
+- name: Check if master is ready
+  delegate_to: "{{ kubeadm_init_master }}"
+  shell: kubectl get nodes | grep " Ready"
+  register: __cmd_res
+  retries: 100
+  delay: 5
+  until: __cmd_res.stdout_lines | count > 0
+  changed_when: __cmd_res.rc != 0
+
+- name: Check if server already installed is ready
+  delegate_to: "{{ kubeadm_init_master }}"
+  shell: kubectl get nodes
+  register: __cmd_res
+  changed_when: __cmd_res.rc != 0
+
+- name: Get join command
+  delegate_to: "{{ kubeadm_init_master }}"
+  command: kubeadm init phase upload-certs --upload-certs
+  register: __kubeadm_certs
+  when: ansible_hostname not in __cmd_res.stdout
+
+- name: Get token command
+  delegate_to: "{{ kubeadm_init_master }}"
+  command: kubeadm token create --print-join-command
+  register: __kubeadm_token
+  when: ansible_hostname not in __cmd_res.stdout
+
+- name: Joining new worker to master
+  shell: "{{ __kubeadm_token.stdout_lines[0] }} --certificate-key {{ __kubeadm_certs.stdout_lines[2] }} --apiserver-advertise-address={{ ansible_default_ipv4.address }}"
+  when: ansible_hostname not in __cmd_res.stdout and ansible_hostname in groups["workers"]
+
+- name: Joinning new master to master
+  shell: "{{ __kubeadm_token.stdout_lines[0] }} --control-plane --certificate-key {{ __kubeadm_certs.stdout_lines[2] }} --apiserver-advertise-address={{ ansible_default_ipv4.address }}"
+  when: ansible_hostname not in __cmd_res.stdout and ansible_hostname in groups["seconds"]

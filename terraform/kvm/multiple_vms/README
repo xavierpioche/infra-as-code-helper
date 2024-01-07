@@ -1,0 +1,1 @@
+To create multiple vm with kvm, just update the variables.auto.tfvars file.

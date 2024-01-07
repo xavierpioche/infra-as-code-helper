@@ -1,0 +1,24 @@
+dns_domain: xprd.k8s.local
+dns_server: 192.168.1.240
+
+ package_list:
+   - cloud-init
+
+key_algo: "rsa"
+key_size: 2048
+name_C: "FR"
+name_L: "MS"
+name_O: "ORANGE"
+name_OU: "DSI"
+name_ST: "GP"
+
+masters: "192.168.10.101,192.168.10.102,192.168.10.103"
+main: "192.168.10.101"
+loadbalancer: "192.168.10.100"
+
+master1: "192.168.10.101"
+master2: "192.168.10.102"
+master3: "192.168.10.103"
+podscidr: "10.244.0.0/16"
+svcscidr: "192.168.12.0/24"
+

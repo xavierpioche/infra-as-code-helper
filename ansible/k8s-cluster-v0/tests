@@ -1,0 +1,28 @@
+#ansible -i hosts all -m ping
+
+#ansible-playbook -i hosts -e "src=templates/resolv.conf.j2 dest=/etc/resolv.conf dns_domain=xprd.k8s.local dns_server=192.168.1.240" 0-templates.yml
+
+#ansible-playbook -i hosts -e "src=templates/hosts.j2 dest=/etc/hosts" 0-templates.yml
+
+#ansible-playbook -i hosts -e '{"package_list":[ "cloud-init" ] }' 0-remove-cloud-init.yml
+
+#ansible-playbook -i hosts 0-add-packages.yml
+
+#ansible-playbook -i hosts 2-users.yml
+
+#ansible-playbook -i hosts 3-install-k8s.yml
+
+#ansible-playbook -i hosts -e "src=templates/ca-config.json.j2 dest=/tmp/ca-config.json" 0-a-templates.yml
+
+#ansible-playbook -i hosts -e 'src=templates/ca-csr.json.j2 dest=/tmp/ca-csr.json.j2 key_algo=rsa key_size=2048 name_C="FR" name_L="MS" name_O="ORANGE" name_OU="DSI" name_ST="GP"' 0-a-templates.yml
+
+#ansible-playbook -i hosts 4-main-master-a-prepare.yml
+
+#ansible-playbook -i hosts 4-main-master-b-push.yml
+
+#ansible-playbook -i hosts 4-main-master-b-install.yml
+
+
+
+#wget https://github.com/k8snetworkplumbingwg/multus-cni/blob/master/deployments/multus-daemonset.yml
+#kubectl apply -f multus-daemonset.yml

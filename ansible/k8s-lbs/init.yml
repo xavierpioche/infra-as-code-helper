@@ -1,0 +1,41 @@
+- hosts: all
+  become: yes
+  max_fail_percentage: 0
+  vars_files: ./variables.yaml
+  tasks:
+    - action: setup
+
+    - import_tasks: zz_0-templates.yml
+      vars:
+         src: templates/resolv.conf.j2
+         dest: /etc/resolv.conf
+         #dns_domain: k8s.xprd.local
+         #dns_server: 192.168.122.197
+
+
+    - import_tasks: zz_0-add-packages.yml
+      vars:
+         package_list:
+           - haproxy
+
+    - import_tasks: zz_0-templates.yml
+      vars:
+         src: templates/haproxy.cfg.j2
+         dest: /etc/haproxy/haproxy.cfg
+         #vip_name: "k8s"
+         #vip_ip: "192.168.122.229"
+         #vip_port: "6443"
+         #server_name_1: "k8Sma1"
+         #server_ip_1: "192.168.122.178"
+         #server_port_1: "6443"
+         #server_name_2: "k8sma2"
+         #server_ip_2: "192.168.122.237"
+         #server_port_2: "6443"
+         #server_name_3: "k8sma3"
+         #server_ip_3: "192.168.122.186"
+         #server_port_3: "6443"
+
+    - import_tasks: zz_0-restart_services
+      vars:
+         svc:
+           - haproxy

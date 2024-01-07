@@ -1,0 +1,10 @@
+options {
+        directory "/var/cache/bind";
+        forwarders {
+            {{ dnsforwarder }} ;
+        };
+        dnssec-validation no;
+        listen-on port 53 { any; };
+        listen-on-v6 { any; };
+        allow-query { any; };
+};

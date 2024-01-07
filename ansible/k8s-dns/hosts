@@ -1,0 +1,2 @@
+
+k8dns1 ansible_host=192.168.122.232 ansible_user=xavier

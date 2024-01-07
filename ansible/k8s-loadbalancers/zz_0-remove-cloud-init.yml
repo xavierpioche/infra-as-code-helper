@@ -1,1 +1,1 @@
-../k8s-cluster/zz_0-remove-cloud-init.yml
+../k8s-cluster-v0/zz_0-remove-cloud-init.yml

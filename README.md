@@ -33,5 +33,9 @@ $ complete init_env_lab.sh
 
 Start with packer to create templates then use them with terraform.
 
-__test__
-_test_
+You need to install a dns with dynamic dns enabled and a loadbalancer. To do so, you can use terraform with vsphere or kvm then use ansible to configure them.
+
+The k8s-cluster-v0 used fixed ip with terraform and ansible whereas k8s-cluster-v1 (ansible/terraform (kvm multiples-vms)) use dhcp.
+
+Nota:
+When using dhcp with terraform, the dns module may throw an error if the server address has not been provided quickly. Just wait few seconds then make a terraform refresh, terraform plan and terraform apply again.

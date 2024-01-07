@@ -1,0 +1,14 @@
+$ORIGIN {{ domainname }}.
+$TTL 5m
+
+@  IN   SOA     {{ dnsservername }}.{{ domainname }}. hostmaster.{{ domainname }}. (
+                        1
+                        3600
+                        600
+                        3600000
+                        86400 )
+
+                IN      NS      {{ dnsservername }}.{{ domainname }}.
+
+
+{{ dnsservername }}  IN      A       {{ dnsserveraddress }}

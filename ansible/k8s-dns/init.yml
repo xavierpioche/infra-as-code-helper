@@ -1,0 +1,54 @@
+- hosts: all
+  become: yes
+  max_fail_percentage: 0
+  vars_files: ./variables.yaml
+  tasks:
+    - action: setup
+
+    - import_tasks: zz_0-add-packages.yml
+      vars:
+         package_list:
+           - bind9
+
+    - name: create zones directory
+      ansible.builtin.file:
+        path: /etc/bind/zones
+        state: directory
+        mode: u+rw,g+rw,o-wx
+        owner: bind
+        group: bind
+
+    - import_tasks: zz_0-templates.yml
+      vars:
+         src: templates/named.conf.options.j2
+         dest: /etc/bind/named.conf.options
+         #dnsforwarder: 192.168.1.1
+
+    - import_tasks: zz_0-templates.yml
+      vars:
+         src: templates/named.conf.local.j2
+         dest: /etc/bind/named.conf.local
+         #domainname: k8s.xprd.local
+
+    - import_tasks: zz_0-templates.yml
+      vars:
+         src: templates/db.zone.j2
+         dest: /etc/bind/zones/k8s.xprd.local
+         #domainname: k8s.xprd.local
+         #dnsservername: k8sdns
+         #dnsserveraddress: 192.168.122.197
+
+    - name: disable apparmor
+      ansible.builtin.service:
+         name: apparmor
+         state: stopped
+         enabled: false
+
+    - import_tasks: zz_0-restart_services
+      vars:
+         svc:
+           - named
+
+   - name: reboot the server
+     ansible.builtin.reboot:
+       reboot_timeout: 30

@@ -1,5 +1,8 @@
 - hosts: all
   become: yes
+  max_fail_percentage: 0
+  gather_facts: yes
+  vars_files: ./variables.yaml
   tasks:
     - name: force delete temp
       shell:  rm -rf /tmp/pki ; rm -f /tmp/kubernetes_join_command ; rm -f /tmp/ca.pem ; rm -f /tmp/kubernetes.pem ; rm -f /tmp/kubernetes-key.pem ; rm -f /tmp/pki.tar
@@ -120,7 +123,7 @@
          master3: "192.168.10.103"
          podscidr: "10.244.0.0/16"
          svcscidr: "192.168.12.0/24"
-         dnsdomain: "xprd.k8s.local"
+         dns_domain: "xprd.k8s.local"
       when: inventory_hostname in groups["masters"]
 
     - name: kubeadm init on master 

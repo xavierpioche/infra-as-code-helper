@@ -17,4 +17,4 @@ etcd:
 networking:
   podSubnet: {{ podscidr }}
   serviceSubnet: {{ svcscidr }}
-  dnsDomain: {{ dnsdomain }}
+  dnsDomain: {{ dns_domain }}
