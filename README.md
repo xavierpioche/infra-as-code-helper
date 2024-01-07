@@ -27,9 +27,11 @@ A list of technologies used within this project:
 
 ## Installation
 ***
+```bash
 $ git clone https://....
 $ cd /path/to/the/files
-$ complete init_env_lab.sh
+$ vim init_env_lab.sh
+```
 
 Start with packer to create templates then use them with terraform.
 
