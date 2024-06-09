@@ -1,0 +1,70 @@
+- hosts: all
+  become: yes
+  max_fail_percentage: 0
+  vars_files: ./variables.yaml
+  tasks:
+    - action: setup
+
+    - import_tasks: zz_0-add-packages.yml
+      vars:
+         package_list:
+           - apache2
+           - php
+           - php-mysql
+           - php-mbstring
+           - php-curl
+           - php-gd
+           - php-xml
+           - php-intl
+           - php-ldap
+           - php-apcu
+           - php-xmlrpc
+           - php-zip
+           - php-bz2
+           - php-imap
+           - mariadb-server
+
+    - import_tasks: zz_0-templates.yml
+      vars:
+         src: templates/mysql_secure.sql.j2
+         dest: /tmp/mysql_secure.sql
+
+    - import_tasks: zz_0-templates.yml
+      vars:
+         src: templates/mysql_createdb_user.sql.j2
+         dest: /tmp/mysql_createdb_user.sql
+
+    - name: execute secure root
+      shell: "mysql -sfu root < /tmp/mysql_secure.sql"
+      become: yes
+
+    - name: execute create db user
+      shell: "mysql -sfu root --password='{{ db_root_pwd }}' < /tmp/mysql_createdb_user.sql"
+      become: yes
+
+    - name: download glpi
+      ansible.builtin.get_url:
+        url: https://github.com/glpi-project/glpi/releases/download/{{ glpi_version }}/glpi-{{ glpi_version }}.tgz
+        dest: /var/www/html
+
+    - name: unarchive glpi
+      ansible.builtin.unarchive:
+        src: /var/www/html/glpi-{{ glpi_version }}.tgz
+        dest: /var/www/html/
+        remote_src: true
+
+    - name: change glpi dir ownership
+      ansible.builtin.file:
+        path: /var/www/html/glpi
+        state: directory
+        recurse: yes
+        owner: www-data
+        group: www-data
+
+
+
+    - name: disable apparmor
+      ansible.builtin.service:
+         name: apparmor
+         state: stopped
+         enabled: false
