@@ -1,4 +1,4 @@
 CREATE DATABASE `{{ my_db }}`;
-CREATE USER 'adm_{{ my_user }}'@localhost IDENTIFIED BY '{{ my_adm_password }}';
-GRANT ALL PRIVILEGES ON {{ my_db }}.* TO 'adm_{{ my_user }}'@'%' ;
+CREATE USER '{{ my_user }}'@localhost IDENTIFIED BY '{{ my_adm_password }}';
+GRANT ALL PRIVILEGES ON {{ my_db }}.* TO '{{ my_user }}'@localhost ;
 FLUSH PRIVILEGES;
