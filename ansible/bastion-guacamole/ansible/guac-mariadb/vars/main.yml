@@ -1,0 +1,7 @@
+---
+# vars file for guac-mariadb
+db_root_pwd: Changeme4
+my_host: localhost
+my_db: guacdb
+my_user: guacusr
+my_pass: Changeme1

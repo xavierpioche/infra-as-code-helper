@@ -1,0 +1,11 @@
+- name: Install Apache Guacamole
+  hosts: all
+  become: true
+  vars_files:
+    - ./variables.yml
+  roles:
+    - guac-mariadb
+    - guac-guacamole
+    - guac-tomcat
+    - guac-extensions
+

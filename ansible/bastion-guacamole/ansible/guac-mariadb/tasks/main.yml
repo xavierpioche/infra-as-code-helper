@@ -1,0 +1,30 @@
+---
+# tasks file for guac-mariadb
+- action: setup
+
+- name: add mariadb packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - mariadb-server
+
+- name: secure mysql root
+  template:
+    src: templates/mysql_secure.sql.j2
+    dest: /tmp/mysql_secure.sql
+    mode: 0644
+
+- name: create guac database and user
+  template:
+    src: templates/mysql_createdb_user.sql.j2
+    dest: /tmp/mysql_createdb_user.sql
+    mode: 0644
+
+- name: execute secure root
+  shell: "mysql -sfu root < /tmp/mysql_secure.sql"
+  become: yes
+
+- name: execute create db user
+  shell: "mysql -sfu root --password='{{ db_root_pwd }}' < /tmp/mysql_createdb_user.sql"
+  become: yes

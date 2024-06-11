@@ -1,0 +1,24 @@
+---
+# tasks file for guac-tomcat
+- name: install pre-requisite packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+     - tomcat9
+     - tomcat9-admin
+     - tomcat9-common
+     - tomcat9-user
+
+- name: get guacamole war
+  get_url: 
+     url: https://downloads.apache.org/guacamole/{{ guac_version }}/binary/guacamole-{{ guac_version }}.war
+     dest: /var/lib/tomcat9/webapps/guacamole.war
+
+- name: restart services
+  systemd_service:
+     state: restarted
+     name: "{{ item }}"
+  loop: 
+     - tomcat9
+     - guacd

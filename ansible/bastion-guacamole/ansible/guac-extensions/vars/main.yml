@@ -1,0 +1,9 @@
+---
+# vars file for guac-extensions
+guac_version: 1.5.4
+guac_db_version: mysql
+mysql_connector_version: 8.4.0
+my_host: localhost
+my_db: guacdb
+my_user: guacusr
+my_pass: Changeme1

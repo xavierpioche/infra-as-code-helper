@@ -1,0 +1,89 @@
+---
+# tasks file for guac-extensions
+- name: download extensions
+  get_url:
+     url: "https://downloads.apache.org/guacamole/{{ guac_version }}/binary/guacamole-{{ item }}-{{ guac_version }}.tar.gz"
+     dest: /tmp
+  loop:
+     - auth-jdbc
+     - auth-ldap
+     - auth-totp
+
+- name: unarchive guac extensions
+  unarchive:
+     src: /tmp/guacamole-{{ item }}-{{ guac_version }}.tar.gz
+     dest: /tmp
+     remote_src: true
+  loop:
+     - auth-jdbc
+     - auth-ldap
+     - auth-totp
+
+- name: copy auth jdbc mysql extension
+  copy:
+     src: /tmp/guacamole-auth-jdbc-{{ guac_version }}/{{ guac_db_version }}/guacamole-auth-jdbc-{{ guac_db_version }}-{{ guac_version }}.jar
+     dest: /etc/guacamole/extensions/
+     remote_src: true
+
+- name: wget j connector
+  shell: "cd /tmp ; wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-j-{{ mysql_connector_version }}.tar.gz"
+
+- name: unarchive j connector
+  unarchive:
+     src: /tmp/mysql-connector-j-{{ mysql_connector_version }}.tar.gz
+     dest: /tmp
+     remote_src: true
+
+- name: copy j connector to guacamole lib
+  copy:
+     src: /tmp/mysql-connector-j-{{ mysql_connector_version }}/mysql-connector-j-{{ mysql_connector_version }}.jar
+     dest: /etc/guacamole/lib/
+     remote_src: true
+
+- name: apply sql script
+  shell: "cat /tmp/guacamole-auth-jdbc-{{ guac_version }}/mysql/schema/*.sql | mysql -u {{ my_user }} --password='{{ my_pass }}' {{ my_db }}"
+
+- name: create guacamole properties
+  copy:
+     mode: 0744
+     dest: /etc/guacamole/guacamole.properties
+     content: |
+       mysql-hostname: 127.0.0.1
+       mysql-port: 3306
+       mysql-database: {{ my_db }}
+       mysql-username: {{ my_user }}
+       mysql-password: {{ my_pass }}
+
+- name: create guacd.conf
+  copy:
+     mode: 0744
+     dest: /etc/guacamole/guacd.conf
+     content: |
+       [server]
+       bind_host = 0.0.0.0
+       bind_port = 4822
+
+- name: add user for guacd
+  user: 
+     name: guacd
+     shell: /bin/nologin
+
+- name: create var lib guacd
+  file:
+     path: /var/lib/guacd
+     state: directory
+     mode: 0755
+     owner: guacd
+     group: guacd
+
+- name: change user in systemd
+  shell: "sed -i 's/daemon/guacd/' /etc/systemd/system/guacd.service"
+
+- name: restart services
+  systemd_service:
+     state: restarted
+     name: "{{ item }}"
+  loop:
+     - mariadb
+     - tomcat9
+     - guacd
