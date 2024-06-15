@@ -1,0 +1,95 @@
+---
+# tasks file for guac-apache
+- action: setup
+
+- name: add apache2 pkg
+  apt:
+     name: "{{ item }}"
+     state: present
+  loop:
+     - apache2
+     - certbot
+     - python3-certbot-apache
+
+- stat: path=/etc/letsencrypt/.registered
+  register: registered
+  when: not alreadyregistered and not privatecert
+
+- name: register certbot
+  shell: "certbot -n register --agree-tos --email {{ email }}"
+  when: registered.stat.exists is defined and not registered.stat.exists and not alreadyregistered and not privatecert
+
+- name: create certbot registered file
+  file:
+     path: /etc/letsencrypt/.registered
+     state: touch
+     mode: 0644
+  when: registered.stat.exists is defined and not registered.stat.exists and not privatecert
+
+- stat: path={{ sslpath }}/{{ domainname }}.csr
+  register: sslcsr
+
+- stat: path={{ sslpath }}/{{ domainname }}.pem
+  register: sslpem
+
+- stat: path={{ sslpath }}/{{ domainname }}.crt
+  register: sslcrt
+
+- name: create the self CSR
+  shell: "openssl req -nodes -newkey rsa:2048 -keyout {{ sslpath }}/{{ domainname }}.pem -out {{ sslpath }}/{{ domainname }}.csr -subj '/C={{ sslC }}/ST={{ sslST }}/L={{ sslL }}/O={{ sslO }}/OU={{ sslOU }}/CN={{ sslCN }}'"
+  when: privatecert and ( sslcsr.stat.exists is defined and not sslcsr.stat.exists )
+
+- name: Generate a self signed openssl
+  openssl_certificate:
+     path: "{{ sslpath }}/{{ domainname }}.crt"
+     privatekey_path: "{{ sslpath }}/{{ domainname }}.pem"
+     csr_path: "{{ sslpath }}/{{ domainname }}.csr"
+     provider: selfsigned
+  when: privatecert and ( sslpem.stat.exists is defined and not sslpem.stat.exists )
+
+- name: stop apache service
+  systemd_service:
+     state: stopped
+     name: "{{ item }}"
+  loop:
+     - apache2
+
+- name: request a letsencrypt certificate
+  shell: "certbot certonly --standalone --non-interactive --preferred-challenges http -d {{ domainname }}"
+  become: yes
+  when: not privatecert
+
+- name: activate apache2 modules
+  shell: "a2enmod proxy proxy_wstunnel proxy_http ssl rewrite"
+
+- name: configure apache file with public cert
+  template:
+     src: guacamole.conf.j2
+     dest: /etc/apache2/sites-available/guacamole.conf
+  when: not privatecert
+
+- name: configure apache file with private cert
+  template:
+     src: guacamole-self.conf.j2
+     dest: /etc/apache2/sites-available/guacamole.conf
+  when: privatecert
+
+- name: enable guacamole reverse site
+  shell: "a2ensite guacamole.conf"
+  become: yes
+
+- name: restart service
+  systemd_service:
+     state: restarted
+     name: "{{ item }}"
+  loop:
+     - apache2
+     - guacd
+
+- name: enable service
+  systemd_service:
+     name: "{{ item }}"
+     enabled: true
+     masked: no
+  loop:
+     - apache2

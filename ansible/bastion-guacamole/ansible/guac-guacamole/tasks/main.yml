@@ -58,3 +58,11 @@
      state: restarted
      daemon_reload: true
      name: guacd
+
+- name: enable service
+  systemd_service:
+     name: "{{ item }}"
+     enabled: true
+     masked: no
+  loop:
+     - guacd

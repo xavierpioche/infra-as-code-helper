@@ -28,3 +28,11 @@
 - name: execute create db user
   shell: "mysql -sfu root --password='{{ db_root_pwd }}' < /tmp/mysql_createdb_user.sql"
   become: yes
+
+- name: enable service
+  systemd_service:
+     name: "{{ item }}"
+     enabled: true
+     masked: no
+  loop:
+     - mariadb

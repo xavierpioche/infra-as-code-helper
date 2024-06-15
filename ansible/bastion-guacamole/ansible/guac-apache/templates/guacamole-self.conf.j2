@@ -1,0 +1,23 @@
+<VirtualHost *:80>
+   ServerName {{ domainname }}
+   Redirect permanent / https://{{ domainname }}/
+</VirtualHost>
+
+<VirtualHost *:443>
+   ServerName {{ domainname }}
+
+   SSLEngine On
+   SSLCertificateFile {{ sslpath }}/{{ domainname }}.crt
+   SSLCertificateKeyFile {{ sslpath }}/{{ domainname }}.pem
+
+   ProxyPass / http://127.0.0.1:8080/ flushpackets=on
+   ProxyPassReverse / http://127.0.0.1:8080/
+
+   <Location /websocket-tunnel>
+      Order allow,deny
+      Allow from all
+      ProxyPass ws://127.0.0.1:8080/websocket-tunnel
+      ProxyPassReverse ws://127.0.0.1:8080/websocket-tunnel
+   </Location>
+
+</VirtualHost>

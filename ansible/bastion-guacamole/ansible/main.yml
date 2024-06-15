@@ -4,8 +4,9 @@
   vars_files:
     - ./variables.yml
   roles:
-    - guac-mariadb
-    - guac-guacamole
-    - guac-tomcat
-    - guac-extensions
+#    - guac-mariadb
+#    - guac-guacamole
+#    - guac-tomcat
+#    - guac-extensions
+    - guac-apache
 

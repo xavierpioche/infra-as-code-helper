@@ -22,3 +22,12 @@
   loop: 
      - tomcat9
      - guacd
+
+- name: enable service
+  systemd_service:
+     name: "{{ item }}"
+     enabled: true
+     masked: no
+  loop:
+     - tomcat9
+

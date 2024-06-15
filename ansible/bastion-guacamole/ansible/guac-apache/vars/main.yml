@@ -1,0 +1,13 @@
+---
+# vars file for guac-apache
+domainname: guac.testxpi.local
+email: tylshiloh@hotmail.com
+alreadyregistered: true
+privatecert: true
+sslpath: /etc/ssl
+sslC: GP
+sslST: PB
+sslL: PB
+sslO: mycorp
+sslOU: IT
+sslCN: testxpi.local

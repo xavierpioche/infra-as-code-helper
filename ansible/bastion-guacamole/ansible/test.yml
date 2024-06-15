@@ -1,0 +1,14 @@
+- name: debug file presence
+  hosts: all
+  become: true
+  tasks:
+   - action: setup
+
+   - stat: 
+       path: /etc/ssl/test.csr
+     register: sslcsr
+
+   - name: create the self CSR
+     debug:
+       msg: "create!"
+     when:  sslcsr.stat.exists is defined and not sslcsr.stat.exists 
