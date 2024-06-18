@@ -8,4 +8,6 @@ common_vm_subenvx = "k8s"
 common_vm_envx = "xprd"
 common_vm_tld = "local"
 
+template_img = "jammy-server-cloudimg-amd64.img"
+
 dns_server = "192.168.122.232"

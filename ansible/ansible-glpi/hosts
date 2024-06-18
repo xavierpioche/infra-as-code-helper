@@ -1,1 +1,1 @@
-glpi ansible_host=192.168.122.214 ansible_user=xavier
+glpi ansible_host=192.168.122.237 ansible_user=xavier

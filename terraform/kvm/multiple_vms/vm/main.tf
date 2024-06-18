@@ -13,12 +13,13 @@ variable "domain" { default = "example.com" }
 variable "ip_type" { default = "dhcp" } # dhcp is other valid type
 variable "memoryMB" { default = 1024*1 }
 variable "cpu" { default = 1 }
+variable "template_img" { default = "jammy-server-cloudimg-amd64.img" }
 
 // fetch the latest ubuntu release image from their mirrors
 resource "libvirt_volume" "os_image" {
   name = "${var.hostname}-os_image"
   pool = "kvmpool01"
-  source = "/home/xavier/Downloads/jammy-server-cloudimg-amd64.img"
+  source = "/home/xavier/Downloads/${var.template_img}"
   format = "qcow2"
 }
 

@@ -61,6 +61,17 @@
         owner: www-data
         group: www-data
 
+#    - name: install cmd line
+#      expect:
+#         command: sudo php /var/www/html/glpi/bin/console db:install -r -f -H {{ my_host }} -d {{ my_db }} -u {{ my_user }} -p {{ my_adm_password }} -L {{ my_lang }}
+#         responses:
+#           "Do you want to continue? [Yes/no]":
+#             - "Yes"
+#           "Do you want to continue? [Yes/no]":
+#             - "Yes"
+#           'Do you want to send "usage statistics"? [Yes/no]':
+#             - "Yes"
+
     - name: create installcmd line 
       copy:
         mode: '0700'
@@ -70,8 +81,8 @@
 
 
 
-    - name: disable apparmor
-      ansible.builtin.service:
-         name: apparmor
-         state: stopped
-         enabled: false
+#    - name: disable apparmor
+#      ansible.builtin.service:
+#         name: apparmor
+#         state: stopped
+#         enabled: false

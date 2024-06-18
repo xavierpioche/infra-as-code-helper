@@ -23,6 +23,7 @@ variable "vms_domain" { type = list }
 variable "vms_ip_type" { type = list }
 variable "vms_memoryMB" { type = list }
 variable "vms_cpu" { type = list }
+variable "jammy-server-cloudimg-amd64.img" {}
 
 #variable "dns_server" {}
 #variable "common_vm_envx" {}
