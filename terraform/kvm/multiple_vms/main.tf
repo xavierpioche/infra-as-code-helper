@@ -23,7 +23,7 @@ variable "vms_domain" { type = list }
 variable "vms_ip_type" { type = list }
 variable "vms_memoryMB" { type = list }
 variable "vms_cpu" { type = list }
-variable "jammy-server-cloudimg-amd64.img" {}
+variable "template_img" {}
 
 #variable "dns_server" {}
 #variable "common_vm_envx" {}
@@ -47,6 +47,7 @@ module "vm" {
 	ip_type = var.vms_ip_type["${each.key}"]
 	memoryMB = var.vms_memoryMB["${each.key}"]
 	cpu = var.vms_cpu["${each.key}"]
+	template_img = var.template_img
 }
 
 output "information" {
